@@ -9,12 +9,12 @@ export default function indexRouter() {
           {/* 模糊匹配 */}
           <Switch>
             <Route path='/login' component={Login}/>
-            <Route path='/' component={NewsSandBox}/>
-            {/* <Route path='/' render={()=>{
-            
-            <NewsSandBox></NewsSandBox>
-            
-            }}/> */}
+            {/* <Route path='/' component={NewsSandBox}/> */}
+            <Route path='/' render={()=>{
+              return localStorage.getItem('ss')?
+              <NewsSandBox></NewsSandBox>:
+              <Redirect to="/login"/>
+            }}/>
             
           </Switch>
       </HashRouter>
