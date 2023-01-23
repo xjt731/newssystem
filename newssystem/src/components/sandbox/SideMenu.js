@@ -56,7 +56,8 @@ function SideMenu(props) {
   const dfs1 = (list) => {
     const arr = []
     list.map((item) => {
-      if (item.children && item.children.length !== 0) {
+      //如果item.children是unf，再.length会报错
+      if (item.children && item.children?.length !== 0) {
         arr.push(obj(item.key, iconList[item.key], item.label, dfs1(item.children)))
       } else {
         if (item.pagepermisson) {
@@ -73,12 +74,15 @@ function SideMenu(props) {
     props.history.push(e.key)
   };
 
+  const selectKeys = [props.location.pathname]
+  const openKeys=['/'+ props.location.pathname.split('/')[1]]
+
   return (
     <Sider trigger={null} collapsible collapsed={false}>
       <div className="logo" >全球新闻发布管理系统</div>
       <Menu
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
+        defaultSelectedKeys={selectKeys}
+        defaultOpenKeys={openKeys}
         mode="inline"
         theme="dark"
         onClick={onClick}
