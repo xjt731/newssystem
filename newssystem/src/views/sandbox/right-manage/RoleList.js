@@ -76,7 +76,7 @@ export default function RoleList() {
 
 
     const handleOk = ()=>{
-        console.log(currentRights,currentId)
+        //console.log(currentRights,currentId)
         setisModalVisible(false)
         //同步datasource
         setdataSource(dataSource.map(item=>{
