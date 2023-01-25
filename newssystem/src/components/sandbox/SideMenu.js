@@ -58,10 +58,10 @@ function SideMenu(props) {
     list.map((item) => {
       //如果item.children是unf，再.length会报错
       if (item.children && item.children?.length !== 0) {
-        arr.push(obj(item.key, iconList[item.key], item.label, dfs1(item.children)))
+        arr.push(obj(item.key, iconList[item.key], item.title, dfs1(item.children)))
       } else {
         if (item.pagepermisson) {
-          arr.push(obj(item.key, iconList[item.key], item.label))
+          arr.push(obj(item.key, iconList[item.key], item.title))
         }
       }
     })

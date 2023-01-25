@@ -28,15 +28,19 @@ export default function RightList() {
         },
         {
             title: '权限名称',
-            dataIndex: 'label'
+            //权限名称用title
+            dataIndex: 'title'
         },
         {
             title: "权限路径",
+            //路径用key
             dataIndex: 'key',
             render: (key) => { return <Tag color='orange'>{key}</Tag> }
         },
         {
             title: "操作",
+            //不用放某个值，则不用dataIndex属性
+            //item整个对象
             render: (item) => {
                 return <div>
                     <Button danger shape="circle" icon={<DeleteOutlined />} onClick={() => confirmMethod(item)} />

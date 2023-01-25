@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal } from 'antd'
+import { Table, Button, Modal,Tree } from 'antd'
 import axios from 'axios'
 import { DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 const { confirm } = Modal
 export default function RoleList() {
     const [dataSource, setdataSource] = useState([])
+    const [rightList, setRightList] = useState([])
+    const [currentRights, setcurrentRights] = useState([])
+    const [isModalVisible, setisModalVisible] = useState(false)
     const columns = [
         {
             title: 'ID',
@@ -22,7 +25,10 @@ export default function RoleList() {
             render: (item) => {
                 return <div>
                     <Button danger shape="circle" icon={<DeleteOutlined />} onClick={() => confirmMethod(item)} />
-                    <Button type="primary" shape="circle" icon={<EditOutlined />} />
+                    <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={()=>{
+                        setisModalVisible(true)
+                        setcurrentRights(item.rights)
+                    }}/>
                 </div>
             }
         }
@@ -43,6 +49,7 @@ export default function RoleList() {
         });
 
     }
+    
     //删除
     const deleteMethod = (item) => {
         // console.log(item)
@@ -57,10 +64,42 @@ export default function RoleList() {
         })
     }, [])
 
+    useEffect(() => {
+        axios.get("http://localhost:3000/rights?_embed=children").then(res => {
+            // console.log(res.data)
+            setRightList(res.data)
+        })
+    }, [])
+
+
+
+    const handleOk = ()=>{
+
+    }
+
+    const handleCancel  =()=>{
+        setisModalVisible(false)
+    }
+ 
+    const onCheck = (checkKeys)=>{
+        // console.log(checkKeys)
+        setcurrentRights(checkKeys)
+    }
     return (
         <div>
             <Table dataSource={dataSource} columns={columns}
                 rowKey={(item) => item.id}></Table>
+
+            <Modal title="权限分配" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <Tree
+                checkable
+                checkedKeys = {currentRights}
+                onCheck={onCheck}
+                checkStrictly = {true}
+                treeData={rightList}
+            />
+
+            </Modal>
         </div>
     )
 }
