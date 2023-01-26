@@ -1,9 +1,14 @@
-import React, { forwardRef,useState } from 'react'
+import React, { forwardRef,useEffect,useState } from 'react'
 import {Form,Input,Select} from 'antd'
 const {Option}  = Select
 //props接收父组件数据，forwardRef包裹的函数
 const UserForm = forwardRef((props,ref) => {
     const [isDisabled, setisDisabled] = useState(false)
+    
+    useEffect(()=>{
+        setisDisabled(props.isUpdateDisabled)
+    },[props.isUpdateDisabled])
+
     return (
         <Form
             ref={ref}
