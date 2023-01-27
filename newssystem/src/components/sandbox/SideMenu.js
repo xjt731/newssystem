@@ -57,7 +57,7 @@ function SideMenu(props) {
     const arr = []
     list.map((item) => {
       //如果item.children是unf，再.length会报错
-      if (item.children && item.children?.length !== 0) {
+      if (item.children && item.children?.length !== 0) {  
         arr.push(obj(item.key, iconList[item.key], item.title, dfs1(item.children)))
       } else {
         if (item.pagepermisson) {
