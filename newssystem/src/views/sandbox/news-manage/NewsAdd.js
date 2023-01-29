@@ -53,7 +53,7 @@ export default function NewsAdd(props) {
 
     const handleSave = (auditState) => {
 
-        axios.post('/news', {
+        axios.post('http://localhost:3000/news', {
             ...formInfo,
             "content": content,
             "region": User.region?User.region:"全球",
