@@ -2,8 +2,10 @@ import React, { useEffect, useState,useRef } from 'react'
 import {  Steps, Button, Form, Input, Select } from 'antd'
 import style from './News.module.css'
 import axios from 'axios'
+import NewsEditor from '../../../components/news-manage/NewsEditor';
 const { Step } = Steps;
 const {Option} = Select;
+
 
 export default function NewsAdd() {
     const [current, setCurrent] = useState(0)
@@ -83,7 +85,11 @@ export default function NewsAdd() {
                     </Form>
                 </div>
 
-                <div className={current === 1 ? '' : style.active}>22222</div>
+                <div className={current === 1 ? '' : style.active}>
+                    <NewsEditor getContent={(value)=>{
+                        console.log(value)
+                    }}></NewsEditor>
+                </div>
                 <div className={current === 2 ? '' : style.active}>3333</div>
 
             </div>
