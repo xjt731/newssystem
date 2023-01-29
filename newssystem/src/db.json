@@ -113,8 +113,8 @@
         "/publish-manage/unpublished",
         "/publish-manage/published",
         "/publish-manage/sunset",
-        "/home",
-        "/user-manage"
+        "/user-manage",
+        "/home"
       ]
     },
     {
