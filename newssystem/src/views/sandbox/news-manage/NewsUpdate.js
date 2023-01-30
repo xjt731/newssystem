@@ -14,7 +14,7 @@ export default function NewsUpdate(props) {
     const [formInfo, setformInfo] = useState({})
     const [content, setContent] = useState("")
 
-    const User = JSON.parse(localStorage.getItem("token"))
+    //const User = JSON.parse(localStorage.getItem("token"))
     const handleNext = () => {
         if (current === 0) {
             NewsForm.current.validateFields().then(res => {
@@ -71,17 +71,10 @@ export default function NewsUpdate(props) {
 
     const handleSave = (auditState) => {
 
-        axios.post('http://localhost:3000/news', {
+        axios.patch(`http://localhost:3000/news/${props.match.params.id}`, {
             ...formInfo,
             "content": content,
-            "region": User.region?User.region:"全球",
-            "author": User.username,
-            "roleId": User.roleId,
             "auditState": auditState,
-            "publishState": 0,
-            "createTime": Date.now(),
-            "star": 0,
-            "view": 0,
             // "publishTime": 0
         }).then(res=>{
             props.history.push(auditState===0?'/news-manage/draft':'/audit-manage/list')
