@@ -8,7 +8,7 @@ export default function NewsPreview(props) {
     const [newsInfo, setnewsInfo] = useState(null)
     useEffect(()=>{
         // console.log()
-        axios.get(`http://localhost:3000/news/${props.match.params.id}&_expand=category&_expand=role`).then(res=>{
+        axios.get(`http://localhost:3000/news/${props.match.params.id}?_expand=category&_expand=role`).then(res=>{
             setnewsInfo(res.data)
         })
     },[props.match.params.id])
