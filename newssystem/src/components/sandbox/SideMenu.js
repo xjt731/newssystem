@@ -1,95 +1,109 @@
-import React, { useEffect, useState } from 'react';
-import {
-
-
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  AppstoreOutlined, MailOutlined, SettingOutlined,
-
-  ContainerOutlined,
-  DesktopOutlined,
-
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  PieChartOutlined,
-
-} from '@ant-design/icons';
+import React,{useEffect,useState} from 'react'
+import { Layout, Menu } from 'antd';
 import './index.css'
-import { withRouter } from 'react-router-dom'
-import { Layout, Menu, theme } from 'antd';
+import {withRouter} from 'react-router-dom'
+import {
+  UserOutlined
+} from '@ant-design/icons';
 import axios from 'axios'
-const { Header, Sider, Content } = Layout;
+import {connect} from 'react-redux'
+const { Sider } = Layout;
+const { SubMenu } = Menu
+
+//模拟数组结构
+// const  menuList = [
+//   {
+//     key:"/home",
+//     title:"首页",
+//     icon:<UserOutlined />
+//   },
+//   {
+//     key:"/user-manage",
+//     title:"用户管理",
+//     icon:<UserOutlined />,
+//     children:[
+//       {
+//         key:"/user-manage/list",
+//         title:"用户列表",
+//         icon:<UserOutlined />
+//       }
+//     ]
+//   },
+//   {
+//     key:"/right-manage",
+//     title:"权限管理",
+//     icon:<UserOutlined />,
+//     children:[
+//       {
+//         key:"/right-manage/role/list",
+//         title:"角色列表",
+//         icon:<UserOutlined />
+//       },
+//       {
+//         key:"/right-manage/right/list",
+//         title:"权限列表",
+//         icon:<UserOutlined />
+//       }
+//     ]
+//   }
+// ]
+const iconList = {
+  "/home":<UserOutlined />,
+  "/user-manage":<UserOutlined />,
+  "/user-manage/list":<UserOutlined />,
+  "/right-manage":<UserOutlined />,
+  "/right-manage/role/list":<UserOutlined />,
+  "/right-manage/right/list":<UserOutlined />
+  //.......
+}
+
 
 function SideMenu(props) {
-  const [menu, setMenu] = useState([])
-
-  //第一次渲染画面
-  useEffect(() => {
-    axios.get("http://localhost:3000/rights?_embed=children").then(res => {
-      setMenu(dfs1(res.data))
+  const [meun, setMeun] = useState([])
+  useEffect(()=>{
+    axios.get("http://localhost:3000/rights?_embed=children").then(res=>{
+      console.log(res.data)
+      setMeun(res.data)
     })
-  }, [])
+  },[])
 
-  //生成渲染数组的对象
-  const obj = (key, icon, label, children) => {
-    return {
-      key,
-      icon,
-      label,
-      children,
-    }
+  const {role:{rights}} = JSON.parse(localStorage.getItem("token"))
+
+  const checkPagePermission = (item)=>{
+    return item.pagepermisson && rights.includes(item.key)
   }
-
-  //图标映射对象
-  var iconList = {
-    "/home":<UserOutlined />,
-    "/user-manage": <UserOutlined />,
-    "/user-manage/list": <UserOutlined />,
-    "/right-manage": <UserOutlined />,
-    "/right-manage/role/list": <UserOutlined />,
-    "/right-manage/right/list": <UserOutlined />
-    //.......
-  }
-
-  //渲染符合条件的数组对象
-  const dfs1 = (list) => {
-    const arr = []
-    list.map((item) => {
-      //如果item.children是unf，再.length会报错
-      if (item.children && item.children?.length !== 0) {  
-        arr.push(obj(item.key, iconList[item.key], item.title, dfs1(item.children)))
-      } else {
-        if (item.pagepermisson) {
-          arr.push(obj(item.key, iconList[item.key], item.title))
-        }
+  const renderMenu = (menuList)=>{
+    return menuList.map(item=>{
+      if(item.children?.length>0 && checkPagePermission(item)){
+        return <SubMenu key={item.key} icon={iconList[item.key]} title={item.title}>
+           { renderMenu(item.children) }
+        </SubMenu>
       }
+
+      return checkPagePermission(item) && <Menu.Item key={item.key} icon={iconList[item.key]}  onClick={()=>{
+        //  console.log(props)
+        props.history.push(item.key)
+      }}>{item.title}</Menu.Item>
     })
-    return arr
   }
 
-
-  //点击跳转对应组件
-  const onClick = (e) => {
-    props.history.push(e.key)
-  };
-
+  // console.log(props.location.pathname)
   const selectKeys = [props.location.pathname]
-  const openKeys=['/'+ props.location.pathname.split('/')[1]]
-
+  const openKeys = ["/"+props.location.pathname.split("/")[1]]
   return (
-    <Sider trigger={null} collapsible collapsed={false}>
-      <div className="logo" >全球新闻发布管理系统</div>
-      <Menu
-        defaultSelectedKeys={selectKeys}
-        defaultOpenKeys={openKeys}
-        mode="inline"
-        theme="dark"
-        onClick={onClick}
-        items={menu}
-      />
+    <Sider trigger={null} collapsible collapsed={props.isCollapsed} >
+      <div style={{display:"flex",height:"100%","flexDirection":"column"}}>
+        <div className="logo" >全球新闻发布管理系统</div>
+        <div style={{flex:1,"overflow":"auto"}}>
+          <Menu theme="dark" mode="inline" selectedKeys={selectKeys} className="aaaaaaa" defaultOpenKeys={openKeys}>
+              {renderMenu(meun)}
+          </Menu>
+        </div>
+      </div>
     </Sider>
   )
 }
-
-export default withRouter(SideMenu)
+const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>({
+  isCollapsed
+})
+export default connect(mapStateToProps)(withRouter(SideMenu))
