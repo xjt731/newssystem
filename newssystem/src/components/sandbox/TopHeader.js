@@ -6,10 +6,13 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import {withRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 const { Header } = Layout;
 
 function TopHeader(props) {
+
+    console.log(props)
     const [collapsed, setCollapsed] = useState(false)
     const changeCollapsed = () => {
         setCollapsed(!collapsed)
@@ -37,7 +40,7 @@ function TopHeader(props) {
             }
 
             <div style={{ float: "right" }}>
-                <span>欢迎{username}回来</span>
+                <span>欢迎<span style={{color:"#1890ff"}}>{username}</span>回来</span>
                 <Dropdown overlay={menu}>
                     <Avatar size="large" icon={<UserOutlined />} />
                 </Dropdown>
@@ -46,4 +49,18 @@ function TopHeader(props) {
 
     )
 }
-export default withRouter(TopHeader)
+/*
+ connect(
+  // mapStateToProps  
+  // mapDispatchToProps
+ )(被包装的组件)
+*/
+
+const mapStateToProps = ({CollApsedReducer:{isCollapsed}})=>{
+    // console.log(state)
+    return {
+        isCollapsed
+    }
+}
+
+export default connect(mapStateToProps)(withRouter(TopHeader))
